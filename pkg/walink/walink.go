@@ -20,14 +20,14 @@ func normalizePhone(phone string) string {
 func formatRupiah(amount int64) string {
 	s := fmt.Sprintf("%d", amount)
 	n := len(s)
-	result := ""
+	var b strings.Builder
 	for i, c := range s {
 		if i > 0 && (n-i)%3 == 0 {
-			result += "."
+			b.WriteByte('.')
 		}
-		result += string(c)
+		b.WriteRune(c)
 	}
-	return "Rp" + result
+	return "Rp" + b.String()
 }
 
 func Verified(phone, name string, amount, balance int64) string {
