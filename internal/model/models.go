@@ -31,7 +31,7 @@ type Contribution struct {
 	ID              string             `json:"id"              gorm:"primaryKey;type:text"`
 	Name            string             `json:"name"`
 	Phone           string             `json:"phone"`
-	Amount          int                `json:"amount"`
+	Amount          int64              `json:"amount"`
 	Notes           *string            `json:"notes"`
 	Status          ContributionStatus `json:"status"          gorm:"default:'PENDING'"`
 	ProofImageURL   string             `json:"proofImageUrl"   gorm:"column:proof_image_url"`
@@ -46,7 +46,7 @@ type Expense struct {
 	Date            time.Time       `json:"date"`
 	Description     string          `json:"description"`
 	Category        ExpenseCategory `json:"category"`
-	Amount          int             `json:"amount"`
+	Amount          int64           `json:"amount"`
 	ReceiptImageURL string          `json:"receiptImageUrl" gorm:"column:receipt_image_url"`
 	CreatedBy       string          `json:"createdBy"`
 	CreatedAt       time.Time       `json:"createdAt"`
