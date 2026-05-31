@@ -62,10 +62,7 @@ func (r *ContributionRepo) FindAdmin(f ContributionFilter) ([]model.Contribution
 	var total int64
 	query.Count(&total)
 
-	p := f.Page
-	if p < 1 {
-		p = 1
-	}
+	p := max(f.Page, 1)
 	var items []model.Contribution
 	offset := (p - 1) * f.Limit
 	err := query.Order(sortBy + " " + sortDir).Offset(offset).Limit(f.Limit).Find(&items).Error
