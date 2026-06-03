@@ -110,3 +110,14 @@ func (r *ContributionRepo) FindChartData(since time.Time) ([]model.Contribution,
 		Select(`amount, "verifiedAt"`).Find(&items).Error
 	return items, err
 }
+
+func (r *ContributionRepo) Leaderboard() ([]model.LeaderboardItem, error) {
+	var items []model.LeaderboardItem
+	err := r.db.Model(&model.Contribution{}).
+		Where("status = ?", model.StatusVerified).
+		Select("name, COALESCE(SUM(amount), 0) as total").
+		Group("name").
+		Order("total DESC").
+		Scan(&items).Error
+	return items, err
+}

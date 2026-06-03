@@ -29,6 +29,15 @@ func (h *ContributionHandler) Dashboard(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h *ContributionHandler) Leaderboard(c *gin.Context) {
+	entries, err := h.svc.Leaderboard()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memuat leaderboard"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": entries})
+}
+
 func (h *ContributionHandler) ListPublic(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	year, _ := strconv.Atoi(c.Query("year"))

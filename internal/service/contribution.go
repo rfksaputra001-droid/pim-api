@@ -274,3 +274,25 @@ func (s *ContributionService) ExportCSV() ([][]string, error) {
 	}
 	return rows, nil
 }
+
+type LeaderboardEntry struct {
+	Rank  int    `json:"rank"`
+	Name  string `json:"name"`
+	Total int64  `json:"total"`
+}
+
+func (s *ContributionService) Leaderboard() ([]LeaderboardEntry, error) {
+	items, err := s.repo.Leaderboard()
+	if err != nil {
+		return nil, err
+	}
+	entries := make([]LeaderboardEntry, len(items))
+	for i, item := range items {
+		entries[i] = LeaderboardEntry{
+			Rank:  i + 1,
+			Name:  item.Name,
+			Total: item.Total,
+		}
+	}
+	return entries, nil
+}

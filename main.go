@@ -60,6 +60,7 @@ func main() {
 	pub := r.Group("/api/public")
 	{
 		pub.GET("/dashboard", contribH.Dashboard)
+		pub.GET("/leaderboard", contribH.Leaderboard)
 		pub.GET("/contributions", contribH.ListPublic)
 		pub.POST("/contributions", contribH.Submit)
 		pub.GET("/expenses", expenseH.ListPublic)
