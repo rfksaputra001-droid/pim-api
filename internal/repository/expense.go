@@ -12,21 +12,31 @@ type ExpenseRepo struct{ db *gorm.DB }
 
 func NewExpenseRepo(db *gorm.DB) *ExpenseRepo { return &ExpenseRepo{db} }
 
-func (r *ExpenseRepo) FindPublic(page, limit int) ([]model.Expense, int64, error) {
+func (r *ExpenseRepo) FindPublic(page, limit int, category string) ([]model.Expense, int64, error) {
+	query := r.db.Model(&model.Expense{})
+	if category != "" {
+		query = query.Where("category = ?", category)
+	}
+
 	var total int64
-	r.db.Model(&model.Expense{}).Count(&total)
+	query.Count(&total)
 
 	var items []model.Expense
-	err := r.db.Order("date desc").Offset((page - 1) * limit).Limit(limit).Find(&items).Error
+	err := query.Order("date desc").Offset((page - 1) * limit).Limit(limit).Find(&items).Error
 	return items, total, err
 }
 
-func (r *ExpenseRepo) FindAdmin(page, limit int) ([]model.Expense, int64, error) {
+func (r *ExpenseRepo) FindAdmin(page, limit int, category string) ([]model.Expense, int64, error) {
+	query := r.db.Model(&model.Expense{})
+	if category != "" {
+		query = query.Where("category = ?", category)
+	}
+
 	var total int64
-	r.db.Model(&model.Expense{}).Count(&total)
+	query.Count(&total)
 
 	var items []model.Expense
-	err := r.db.Order("date desc").Offset((page - 1) * limit).Limit(limit).Find(&items).Error
+	err := query.Order("date desc").Offset((page - 1) * limit).Limit(limit).Find(&items).Error
 	return items, total, err
 }
 

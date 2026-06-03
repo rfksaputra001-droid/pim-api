@@ -28,12 +28,12 @@ func (r *AdminRepo) FindByID(id string) (*model.Admin, error) {
 
 func (r *AdminRepo) UpdateLastLogin(id string) error {
 	return r.db.Model(&model.Admin{}).Where("id = ?", id).
-		Update("last_login", gorm.Expr("NOW()")).Error
+		Update("lastLogin", gorm.Expr("NOW()")).Error
 }
 
 func (r *AdminRepo) FindAll() ([]model.Admin, error) {
 	var admins []model.Admin
-	if err := r.db.Order("created_at asc").Find(&admins).Error; err != nil {
+	if err := r.db.Order(`"createdAt" asc`).Find(&admins).Error; err != nil {
 		return nil, err
 	}
 	return admins, nil

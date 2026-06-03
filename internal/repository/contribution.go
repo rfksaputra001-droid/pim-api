@@ -38,8 +38,8 @@ func (r *ContributionRepo) FindPublic(year, month, page, limit int) ([]model.Con
 
 	var items []model.Contribution
 	offset := (page - 1) * limit
-	err := query.Select("id, name, amount, notes, created_at, verified_at").
-		Order("verified_at desc").Offset(offset).Limit(limit).Find(&items).Error
+	err := query.Select(`id, name, amount, notes, "createdAt", "verifiedAt"`).
+		Order(`"verifiedAt" desc`).Offset(offset).Limit(limit).Find(&items).Error
 	return items, total, err
 }
 
@@ -49,10 +49,15 @@ func (r *ContributionRepo) FindAdmin(f ContributionFilter) ([]model.Contribution
 		query = query.Where("status = ?", f.Status)
 	}
 
-	validSorts := map[string]bool{"created_at": true, "amount": true, "name": true}
-	sortBy := "created_at"
-	if validSorts[f.SortBy] {
-		sortBy = f.SortBy
+	// frontend kirim camelCase, map ke kolom DB yang benar
+	sortMap := map[string]string{
+		"createdAt": `"createdAt"`,
+		"amount":    "amount",
+		"name":      "name",
+	}
+	sortBy := `"createdAt"`
+	if col, ok := sortMap[f.SortBy]; ok {
+		sortBy = col
 	}
 	sortDir := "desc"
 	if f.SortDir == "asc" {
@@ -87,7 +92,7 @@ func (r *ContributionRepo) Update(c *model.Contribution) error {
 
 func (r *ContributionRepo) FindAll() ([]model.Contribution, error) {
 	var items []model.Contribution
-	err := r.db.Order("created_at desc").Find(&items).Error
+	err := r.db.Order(`"createdAt" desc`).Find(&items).Error
 	return items, err
 }
 
@@ -101,7 +106,7 @@ func (r *ContributionRepo) SumVerified() (int64, error) {
 
 func (r *ContributionRepo) FindChartData(since time.Time) ([]model.Contribution, error) {
 	var items []model.Contribution
-	err := r.db.Where("status = ? AND verified_at >= ?", model.StatusVerified, since).
-		Select("amount, verified_at").Find(&items).Error
+	err := r.db.Where(`status = ? AND "verifiedAt" >= ?`, model.StatusVerified, since).
+		Select(`amount, "verifiedAt"`).Find(&items).Error
 	return items, err
 }

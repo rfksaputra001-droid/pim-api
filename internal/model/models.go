@@ -27,6 +27,10 @@ const (
 	RoleSuperAdmin AdminRole = "SUPER_ADMIN"
 )
 
+func (Contribution) TableName() string { return "Contribution" }
+func (Expense) TableName() string      { return "Expense" }
+func (Admin) TableName() string        { return "Admin" }
+
 type Contribution struct {
 	ID              string             `json:"id"              gorm:"primaryKey;type:text"`
 	Name            string             `json:"name"`
@@ -34,11 +38,11 @@ type Contribution struct {
 	Amount          int64              `json:"amount"`
 	Notes           *string            `json:"notes"`
 	Status          ContributionStatus `json:"status"          gorm:"default:'PENDING'"`
-	ProofImageURL   string             `json:"proofImageUrl"   gorm:"column:proof_image_url"`
-	RejectionReason *string            `json:"rejectionReason"`
-	CreatedAt       time.Time          `json:"createdAt"`
-	VerifiedAt      *time.Time         `json:"verifiedAt"`
-	VerifiedBy      *string            `json:"verifiedBy"`
+	ProofImageURL   string             `json:"proofImageUrl"   gorm:"column:proofImageUrl"`
+	RejectionReason *string            `json:"rejectionReason" gorm:"column:rejectionReason"`
+	CreatedAt       time.Time          `json:"createdAt"       gorm:"column:createdAt;autoCreateTime"`
+	VerifiedAt      *time.Time         `json:"verifiedAt"      gorm:"column:verifiedAt"`
+	VerifiedBy      *string            `json:"verifiedBy"      gorm:"column:verifiedBy"`
 }
 
 type Expense struct {
@@ -47,16 +51,16 @@ type Expense struct {
 	Description     string          `json:"description"`
 	Category        ExpenseCategory `json:"category"`
 	Amount          int64           `json:"amount"`
-	ReceiptImageURL string          `json:"receiptImageUrl" gorm:"column:receipt_image_url"`
-	CreatedBy       string          `json:"createdBy"`
-	CreatedAt       time.Time       `json:"createdAt"`
+	ReceiptImageURL string          `json:"receiptImageUrl" gorm:"column:receiptImageUrl"`
+	CreatedBy       string          `json:"createdBy"       gorm:"column:createdBy"`
+	CreatedAt       time.Time       `json:"createdAt"       gorm:"column:createdAt;autoCreateTime"`
 }
 
 type Admin struct {
 	ID           string     `json:"id"        gorm:"primaryKey;type:text"`
 	Username     string     `json:"username"  gorm:"uniqueIndex"`
-	PasswordHash string     `json:"-"`
+	PasswordHash string     `json:"-"         gorm:"column:passwordHash"`
 	Role         AdminRole  `json:"role"      gorm:"default:'ADMIN'"`
-	CreatedAt    time.Time  `json:"createdAt"`
-	LastLogin    *time.Time `json:"lastLogin"`
+	CreatedAt    time.Time  `json:"createdAt" gorm:"column:createdAt;autoCreateTime"`
+	LastLogin    *time.Time `json:"lastLogin" gorm:"column:lastLogin"`
 }
