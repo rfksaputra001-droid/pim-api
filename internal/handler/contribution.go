@@ -145,6 +145,9 @@ func (h *ContributionHandler) ExportCSV(c *gin.Context) {
 	}
 
 	escCSV := func(v string) string {
+		if len(v) > 0 && strings.ContainsRune("=+-@\t\r", rune(v[0])) {
+			v = "'" + v
+		}
 		return `"` + strings.ReplaceAll(v, `"`, `""`) + `"`
 	}
 

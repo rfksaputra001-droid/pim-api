@@ -48,7 +48,7 @@ func (r *AdminRepo) UpdateRole(id string, role model.AdminRole) error {
 }
 
 func (r *AdminRepo) UpdatePassword(id, hash string) error {
-	return r.db.Model(&model.Admin{}).Where("id = ?", id).Update("password_hash", hash).Error
+	return r.db.Model(&model.Admin{}).Where("id = ?", id).Update("passwordHash", hash).Error
 }
 
 func (r *AdminRepo) Delete(id string) error {
