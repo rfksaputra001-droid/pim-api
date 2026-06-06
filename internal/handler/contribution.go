@@ -59,7 +59,9 @@ func (h *ContributionHandler) Submit(c *gin.Context) {
 	}
 	defer file.Close()
 
-	mimeType := header.Header.Get("Content-Type")
+	rawMIME := header.Header.Get("Content-Type")
+	mimeType := strings.SplitN(rawMIME, ";", 2)[0]
+	mimeType = strings.TrimSpace(mimeType)
 	if !cloudinary.AllowedMIMEs[mimeType] {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung. Gunakan JPG, PNG, atau PDF."})
 		return
