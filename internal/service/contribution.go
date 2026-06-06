@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"math"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -114,7 +115,6 @@ type SubmitInput struct {
 	NoTelepon   string
 	Nominal     int64
 	Catatan     string
-	IsAnonymous bool
 	FileData    []byte
 	MimeType    string
 }
@@ -130,10 +130,7 @@ func (s *ContributionService) Submit(input SubmitInput, uploadFn func([]byte, st
 		return fmt.Errorf("Nomor telepon tidak valid")
 	}
 
-	name := input.Nama
-	if input.IsAnonymous {
-		name = "Hamba Allah"
-	}
+	name := strings.TrimSpace(input.Nama)
 	if name == "" {
 		return fmt.Errorf("Nama wajib diisi")
 	}

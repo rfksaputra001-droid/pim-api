@@ -79,9 +79,8 @@ func (h *ContributionHandler) Submit(c *gin.Context) {
 		Nama:        strings.TrimSpace(c.PostForm("nama")),
 		NoTelepon:   strings.TrimSpace(c.PostForm("noTelepon")),
 		Nominal:     nominal,
-		Catatan:     strings.TrimSpace(c.PostForm("catatan")),
-		IsAnonymous: c.PostForm("isAnonymous") == "true",
-		FileData:    data,
+		Catatan:  strings.TrimSpace(c.PostForm("catatan")),
+		FileData: data,
 		MimeType:    mimeType,
 	}
 
