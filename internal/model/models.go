@@ -65,7 +65,3 @@ type Admin struct {
 	LastLogin    *time.Time `json:"lastLogin" gorm:"column:lastLogin"`
 }
 
-type LeaderboardItem struct {
-	Name  string `gorm:"column:name"`
-	Total int64  `gorm:"column:total"`
-}

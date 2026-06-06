@@ -282,16 +282,42 @@ type LeaderboardEntry struct {
 }
 
 func (s *ContributionService) Leaderboard() ([]LeaderboardEntry, error) {
-	items, err := s.repo.Leaderboard()
+	contributions, err := s.repo.FindVerifiedForLeaderboard()
 	if err != nil {
 		return nil, err
 	}
-	entries := make([]LeaderboardEntry, len(items))
-	for i, item := range items {
+
+	type group struct {
+		name  string
+		total int64
+	}
+	// Group by decrypted phone — preserves separate identities even with same name
+	byPhone := make(map[string]*group)
+	order := []string{}
+	for _, c := range contributions {
+		phone, _ := crypto.Decrypt(c.Phone)
+		if _, exists := byPhone[phone]; !exists {
+			byPhone[phone] = &group{name: c.Name}
+			order = append(order, phone)
+		}
+		byPhone[phone].total += c.Amount
+	}
+
+	// Sort by total desc
+	for i := 0; i < len(order)-1; i++ {
+		for j := i + 1; j < len(order); j++ {
+			if byPhone[order[j]].total > byPhone[order[i]].total {
+				order[i], order[j] = order[j], order[i]
+			}
+		}
+	}
+
+	entries := make([]LeaderboardEntry, len(order))
+	for i, phone := range order {
 		entries[i] = LeaderboardEntry{
 			Rank:  i + 1,
-			Name:  item.Name,
-			Total: item.Total,
+			Name:  byPhone[phone].name,
+			Total: byPhone[phone].total,
 		}
 	}
 	return entries, nil

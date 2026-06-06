@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -22,8 +23,11 @@ func Upload(ctx context.Context, data []byte, folder string) (string, error) {
 	apiKey := os.Getenv("CLOUDINARY_API_KEY")
 	apiSecret := os.Getenv("CLOUDINARY_API_SECRET")
 
+	log.Printf("[cloudinary] cloud=%q key=%q secret_len=%d", cloudName, apiKey, len(apiSecret))
+
 	cld, err := cloudinary.NewFromParams(cloudName, apiKey, apiSecret)
 	if err != nil {
+		log.Printf("[cloudinary] NewFromParams error: %v", err)
 		return "", fmt.Errorf("cloudinary config error: %w", err)
 	}
 
@@ -32,6 +36,7 @@ func Upload(ctx context.Context, data []byte, folder string) (string, error) {
 		ResourceType: "auto",
 	})
 	if err != nil {
+		log.Printf("[cloudinary] upload error: %v", err)
 		return "", fmt.Errorf("cloudinary upload error: %w", err)
 	}
 
