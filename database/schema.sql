@@ -60,3 +60,17 @@ CREATE TABLE "Admin" (
     CONSTRAINT "Admin_pkey"         PRIMARY KEY (id),
     CONSTRAINT "Admin_username_key" UNIQUE (username)
 );
+
+-- ============================================================
+-- Seed: default superadmin
+-- username : superadmin
+-- password : @IRPK2206
+-- ============================================================
+INSERT INTO "Admin" (id, username, "passwordHash", role, "createdAt")
+VALUES (
+    'test-admin-001',
+    'superadmin',
+    '$2a$12$weWTMS0oyHNke7.gTKD1de8mcAgUpxJVJGvTJKWt6o2aHTslcQkze',
+    'SUPER_ADMIN',
+    NOW()
+);
